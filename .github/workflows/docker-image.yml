@@ -17,7 +17,7 @@ jobs:
     
     - name: Build the Docker image
       run: |
-        docker login -u ${{secrets.DOCKER_USER}} -p ${{secrets.DOCKER_PASSWORD}} ${{secrest.DOCKER_SERVER}}
+        docker login -u ${{secrets.DOCKER_USER}} -p ${{secrets.DOCKER_PASSWORD}} ${{secrets.DOCKER_SERVER}}
         docker build -t node-image:latest .
-        docker image tag node-image:latest ${{secrest.DOCKER_SERVER}}/node-image:latest
-        docker image push ${{secrest.DOCKER_SERVER}}/node-image:latest
+        docker image tag node-image:latest ${{secrets.DOCKER_SERVER}}/node-image:latest
+        docker image push ${{secrets.DOCKER_SERVER}}/node-image:latest
