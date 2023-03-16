@@ -1,0 +1,28 @@
+name: Update Repo
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  update-repo:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout other repository
+        uses: actions/checkout@v2
+        with:
+          repository: hellseyfer/my-chart # Replace owner/repo with the name of the repository you want to update
+          token: ${{ secrets.ACCESS_TOKEN }} # Replace ACCESS_TOKEN with a personal access token with write access to the repository
+
+      - name: Make changes
+        run: |
+          # Make any changes you want to the repository here
+          git add .
+          git commit -m "Update repository from GitHub Actions"
+
+      - name: Push changes
+        run: |
+          # Push the changes back to the repository
+          git push origin HEAD:main
