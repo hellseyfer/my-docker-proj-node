@@ -53,7 +53,7 @@ jobs:
         with:
          args: |
           yq e '.version = (.version | tonumber + 1 | tostring)' Chart.yaml > Chart.yaml.new
-          mv Chart.yaml.new Chart.yaml
+          mv Chart.yaml.new single-app/Chart.yaml
           
       - name: Push changes
         run: |
