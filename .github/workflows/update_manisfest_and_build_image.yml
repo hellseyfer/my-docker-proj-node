@@ -34,6 +34,7 @@ jobs:
     steps:
       - env:
          APP_VER: ${{needs.build.outputs.app_ver}}
+         run: echo "$APP_VER"
       - name: Checkout other repository
         uses: actions/checkout@v2
         with:
