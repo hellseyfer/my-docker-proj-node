@@ -15,9 +15,14 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     
+    - name: Extract App Version
+      run: |
+        APP_VERSION=$(jq -r '.version' package.json)
+        echo "App version is $APP_VERSION"
+          
     - name: Build the Docker image
       run: |
         docker login -u ${{secrets.DOCKER_USER}} -p ${{secrets.DOCKER_PASSWORD}} ${{secrets.DOCKER_SERVER}}
         docker build -t node-image:latest .
-        docker image tag node-image:latest ${{secrets.DOCKER_SERVER}}/node-image:latest
+        docker image tag node-image:latest ${{secrets.DOCKER_SERVER}}/node-image:$APP_VERSION
         docker image push ${{secrets.DOCKER_SERVER}}/node-image:latest
