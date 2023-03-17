@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     # Map a step output to a job output
     outputs:
-      output1: ${{ steps.step1.outputs.app_ver }}
+      app_ver: ${{ steps.step1.outputs.app_ver }}
     steps:
     - uses: actions/checkout@v3
     
@@ -33,8 +33,6 @@ jobs:
     needs: build
       
     steps:
-      - env:
-         APP_VER: ${{needs.build.outputs.app_ver}}
       - name: Checkout other repository
         uses: actions/checkout@v2
         with:
@@ -44,6 +42,8 @@ jobs:
 
       - name: Make changes
         uses: mikefarah/yq@master
+        env:
+         APP_VER: ${{needs.build.outputs.app_ver}}
         with:
           cmd: yq e '.image.tag = "'"$APP_VER"'"' -i values.yaml
           
