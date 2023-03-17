@@ -40,13 +40,20 @@ jobs:
           ref: 'main'
           token: ${{ secrets.ACCESS_TOKEN }} # Replace ACCESS_TOKEN with a personal access token with write access to the repository
 
-      - name: Make changes
+      - name: Change APP Version along with image version
         uses: mikefarah/yq@master
         env:
          APP_VER: ${{needs.build-image.outputs.app_ver}}
         with:
           cmd: |
             yq e '.appVersion = "'"$APP_VER"'"' -i single-app/Chart.yaml
+            
+      - name: Increase Chart version by 1
+        uses: mikefarah/yq@master
+        with:
+         args: |
+          yq e '.version = (.version | tonumber + 1 | tostring)' Chart.yaml > Chart.yaml.new
+          mv Chart.yaml.new Chart.yaml
           
       - name: Push changes
         run: |
