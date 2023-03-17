@@ -13,13 +13,14 @@ jobs:
       - name: Checkout other repository
         uses: actions/checkout@v2
         with:
-          repository: hellseyfer/my-chart # Replace owner/repo with the name of the repository you want to update
+          repository: hellseyfer/my-chart
+          ref: 'main'
           token: ${{ secrets.ACCESS_TOKEN }} # Replace ACCESS_TOKEN with a personal access token with write access to the repository
 
       - name: Make changes
         run: |
-          git config --local user.name actions-user
-          git config --local user.email "actions@github.com"
+          git config user.name "GitHub Actions Bot"
+          git config user.email "<>"
           sed -i 's/\(tag:\).*/\1 1.17/' values.yaml
           # Make any changes you want to the repository here
           git add .
