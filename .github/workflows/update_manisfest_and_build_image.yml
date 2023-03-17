@@ -43,11 +43,9 @@ jobs:
       - name: Make changes
         uses: mikefarah/yq@master
         env:
-         APP_VER: ${{needs.build.outputs.app_ver}}
+         APP_VER: ${{needs.build-image.outputs.app_ver}}
         with:
-          cmd: |
-            echo "App version received: $APP_VER"
-            yq e '.image.tag = "'"$APP_VER"'"' -i values.yaml
+          cmd: yq e '.image.tag = "'"$APP_VER"'"' -i values.yaml
           
       - name: Push changes
         run: |
