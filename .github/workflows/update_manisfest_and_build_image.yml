@@ -45,7 +45,7 @@ jobs:
       - name: Make changes
         uses: mikefarah/yq@master
         with:
-          cmd: yq e '.image.tag = "'"${{ APP_VER }}"'"' -i values.yaml
+          cmd: yq e '.image.tag = "'"$APP_VER"'"' -i values.yaml
           
       - name: Push changes
         run: |
