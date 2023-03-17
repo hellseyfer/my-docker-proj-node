@@ -31,10 +31,10 @@ jobs:
   update-repo:
     runs-on: ubuntu-latest
     needs: build
-    env:
-      APP_VER: ${{needs.build.outputs.app_ver}}
       
     steps:
+      - env:
+         APP_VER: ${{needs.build.outputs.app_ver}}
       - name: Checkout other repository
         uses: actions/checkout@v2
         with:
