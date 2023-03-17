@@ -28,7 +28,7 @@ jobs:
 
       - name: Make changes
         run: |
-          sed -i 's/\(tag:\).*/\$APP_VERSION/' values.yaml
+          sed -i 's/\(tag:\).*/\${{ APP_VERSION }}/' values.yaml
           # Make any changes you want to the repository here
           
       - name: Push changes
