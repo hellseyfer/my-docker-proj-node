@@ -1,5 +1,8 @@
 name: Docker Image CI
 
+env:
+  TEST_ENV: ""
+  
 on:
   push:
     branches: [ "main" ]
@@ -16,13 +19,16 @@ jobs:
     - uses: actions/checkout@v3
     
     - name: Extract App Version
+      id: step1
       run: |
-        export APP_VERSION=$(jq -r '.version' package.json)
+        APP_VERSION=$(jq -r '.version' package.json)
         echo "App version is $APP_VERSION"
+        echo "::set-output name=output::$APP_VERSION"
           
     - name: Build the Docker image
+      id: step2
       run: |
         docker login -u ${{secrets.DOCKER_USER}} -p ${{secrets.DOCKER_PASSWORD}} ${{secrets.DOCKER_SERVER}}
         docker build -t node-image:latest .
-        docker image tag node-image:latest ${{secrets.DOCKER_SERVER}}/node-image:$APP_VERSION
+        docker image tag node-image:latest ${{secrets.DOCKER_SERVER}}/node-image:${{ steps.step1.outputs.output }}
         docker image push ${{secrets.DOCKER_SERVER}}/node-image:latest
