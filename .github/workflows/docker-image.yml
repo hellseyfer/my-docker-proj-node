@@ -31,4 +31,4 @@ jobs:
         docker login -u ${{secrets.DOCKER_USER}} -p ${{secrets.DOCKER_PASSWORD}} ${{secrets.DOCKER_SERVER}}
         docker build -t node-image:${{ steps.step1.outputs.output }} .
         docker image tag node-image:${{ steps.step1.outputs.output }} ${{secrets.DOCKER_SERVER}}/node-image:${{ steps.step1.outputs.output }}
-        docker image push ${{secrets.DOCKER_SERVER}}/node-image:latest
+        docker image push ${{secrets.DOCKER_SERVER}}/node-image:${{ steps.step1.outputs.output }}
