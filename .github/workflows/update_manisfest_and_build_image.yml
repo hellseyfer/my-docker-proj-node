@@ -51,9 +51,8 @@ jobs:
       - name: Increase Chart version by 1
         uses: mikefarah/yq@master
         with:
-         args: |
-          yq e '.version = (.version | tonumber + 1 | tostring)' Chart.yaml > Chart.yaml.new
-          mv Chart.yaml.new single-app/Chart.yaml
+         cmd: |
+           yq e '.version = (.version | tonumber + 1 | tostring)' -i single-app/Chart.yaml
           
       - name: Push changes
         run: |
