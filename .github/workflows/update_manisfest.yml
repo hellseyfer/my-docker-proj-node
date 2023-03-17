@@ -10,6 +10,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - uses: actions/checkout@v3
+      
+      - name: Checkout current repository
+        id: step1
+        run: |
+          APP_VERSION=$(jq -r '.version' package.json)
+          echo "App version is $APP_VERSION"
+          echo "::set-output name=output::$APP_VERSION"
+          
       - name: Checkout other repository
         uses: actions/checkout@v2
         with:
@@ -19,7 +28,7 @@ jobs:
 
       - name: Make changes
         run: |
-          sed -i 's/\(tag:\).*/\1 1.17/' values.yaml
+          sed -i 's/\(tag:\).*/\${{ steps.step1.outputs.output }}/' values.yaml
           # Make any changes you want to the repository here
           
       - name: Push changes
