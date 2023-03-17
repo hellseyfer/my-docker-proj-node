@@ -29,11 +29,9 @@ jobs:
           token: ${{ secrets.ACCESS_TOKEN }} # Replace ACCESS_TOKEN with a personal access token with write access to the repository
 
       - name: Make changes
-        run: |
-          # assuming the format of the tag is X.Y.Z
-          sed -i 's/\(tag:.*\.\)[0-9]\+\.[0-9]\+\.[0-9]\+/\1'"${{ steps.step1.outputs.app_ver }}"'/' values.yaml
-          # updated values.yaml
-          cat values.yaml
+        uses: mikefarah/yq@master
+        with:
+          cmd: yq e '.tag = "'"${{ steps.step1.outputs.app_ver }}"'"' -i values.yaml
           
       - name: Push changes
         run: |
