@@ -45,7 +45,9 @@ jobs:
         env:
          APP_VER: ${{needs.build.outputs.app_ver}}
         with:
-          cmd: yq e '.image.tag = "'"$APP_VER"'"' -i values.yaml
+          cmd: |
+            echo "App version received: $APP_VER"
+            yq e '.image.tag = "'"$APP_VER"'"' -i values.yaml
           
       - name: Push changes
         run: |
