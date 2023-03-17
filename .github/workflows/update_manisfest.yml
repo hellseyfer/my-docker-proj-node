@@ -24,7 +24,6 @@ jobs:
           
       - name: Push changes
         run: |
-          cd my-chart
           git config user.name "action job"
           git config user.email "action@job.com"
           git add .
