@@ -17,7 +17,7 @@ jobs:
         run: |
           APP_VERSION=$(jq -r '.version' package.json)
           echo "App version is $APP_VERSION"
-          echo "::set-output name=output::$APP_VERSION"
+          echo "{output}={$APP_VERSION}" >> $APP_VERSION
           
       - name: Checkout other repository
         uses: actions/checkout@v2
@@ -28,7 +28,7 @@ jobs:
 
       - name: Make changes
         run: |
-          sed -i 's/\(tag:\).*/\${{ steps.step1.outputs.output }}/' values.yaml
+          sed -i 's/\(tag:\).*/\$APP_VERSION/' values.yaml
           # Make any changes you want to the repository here
           
       - name: Push changes
