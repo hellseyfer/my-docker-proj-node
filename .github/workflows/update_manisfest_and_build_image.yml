@@ -45,7 +45,8 @@ jobs:
         env:
          APP_VER: ${{needs.build-image.outputs.app_ver}}
         with:
-          cmd: yq e '.image.tag = "'"$APP_VER"'"' -i single-app/values.yaml
+          cmd: |
+            yq e '.appVersion = "'"$APP_VER"'"' -i single-app/Chart.yaml
           
       - name: Push changes
         run: |
