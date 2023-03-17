@@ -50,9 +50,7 @@ jobs:
             
       - name: Increase Chart version by 1
         run: |
-          version=$(yq e '.version' single-app/Chart.yaml)
-          new_version=$(python -c "major, minor, patch = '${version}'.split('.'); print(f'{major}.{int(minor) + 1}.{patch}')")
-          yq e ".version = '${new_version}'" -i single-app/Chart.yaml
+          echo "to do"
           
       - name: Push changes
         run: |
