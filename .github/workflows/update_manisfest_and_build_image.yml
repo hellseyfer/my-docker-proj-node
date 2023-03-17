@@ -1,0 +1,59 @@
+name: Update Repo
+
+on:
+  push:
+    branches: [ "main" ]
+    
+jobs:
+  build-image:
+    runs-on: ubuntu-latest
+    # Map a step output to a job output
+    outputs:
+      app_ver: ${{ steps.step1.outputs.app_ver }}
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Extract App Version
+      id: step1
+      run: |
+        APP_VERSION=$(jq -r '.version' package.json)
+        echo "App version is $APP_VERSION"
+        echo "app_ver=$APP_VERSION" >> $GITHUB_OUTPUT
+          
+    - name: Build the Docker image
+      id: step2
+      run: |
+        docker login -u ${{secrets.DOCKER_USER}} -p ${{secrets.DOCKER_PASSWORD}} ${{secrets.DOCKER_SERVER}}
+        docker build -t node-image:${{ steps.step1.outputs.app_ver }} .
+        docker image tag node-image:${{ steps.step1.outputs.app_ver }} ${{secrets.DOCKER_SERVER}}/node-image:${{ steps.step1.outputs.app_ver }}
+        docker image push ${{secrets.DOCKER_SERVER}}/node-image:${{ steps.step1.outputs.app_ver }}
+        
+  update-repo:
+    runs-on: ubuntu-latest
+    needs: build-image
+      
+    steps:
+      - name: Checkout other repository
+        uses: actions/checkout@v2
+        with:
+          repository: hellseyfer/my-chart
+          ref: 'main'
+          token: ${{ secrets.ACCESS_TOKEN }} # Replace ACCESS_TOKEN with a personal access token with write access to the repository
+
+      - name: Make changes
+        uses: mikefarah/yq@master
+        env:
+         APP_VER: ${{needs.build.outputs.app_ver}}
+        with:
+          cmd: yq e '.image.tag = "'"$APP_VER"'"' -i values.yaml
+          
+      - name: Push changes
+        run: |
+          git config user.name "action job"
+          git config user.email "action@job.com"
+          git add .
+          git commit -m "Update repository from GitHub Actions"
+          # Push the changes back to the repository
+          git push origin HEAD:main
+          
+
