@@ -18,42 +18,7 @@ spec:
   source:
     repoURL: https://github.com/hellseyfer/my-chart.git  # Can point to either a Helm chart repo or a git repo.
     targetRevision: HEAD  # For Helm, this refers to the chart version.
-    # path: "" # This has no meaning for Helm charts pulled directly from a Helm repo instead of git.
-
-    # helm specific config
-    chart: chart-name  # Set this when pulling directly from a Helm repo. DO NOT set for git-hosted Helm charts.
-    helm:
-      passCredentials: false # If true then adds --pass-credentials to Helm commands to pass credentials to all domains
-      # Extra parameters to set (same as setting through values.yaml, but these take precedence)
-      parameters:
-      - name: "nginx-ingress.controller.service.annotations.external-dns\\.alpha\\.kubernetes\\.io/hostname"
-        value: mydomain.example.com
-      - name: "ingress.annotations.kubernetes\\.io/tls-acme"
-        value: "true"
-        forceString: true # ensures that value is treated as a string
-
-      # Use the contents of files as parameters (uses Helm's --set-file)
-      fileParameters:
-      - name: config
-        path: files/config.json
-
-      # Release name override (defaults to application name)
-      releaseName: my-chart
-
-      # Helm values files for overriding values in the helm chart
-      # The path is relative to the spec.source.path directory defined above
-      valueFiles:
-      - values.yaml
-
-      # Ignore locally missing valueFiles when installing Helm chart. Defaults to false
-      ignoreMissingValueFiles: false
-
-      # Skip custom resource definition installation if chart contains custom resource definitions. Defaults to false
-      skipCrds: false
-
-      # Optional Helm version to template with. If omitted it will fall back to look at the 'apiVersion' in Chart.yaml
-      # and decide which Helm binary to use automatically. This field can be either 'v2' or 'v3'.
-      version: v2
+    path: single-app  # This has no meaning for Helm charts pulled directly from a Helm repo instead of git.
 
   # Destination cluster and namespace to deploy the application
   destination:
@@ -63,7 +28,13 @@ spec:
     # name: in-cluster
     # The namespace will only be set for namespace-scoped resources that have not set a value for .metadata.namespace
     namespace: argocd
-
+  # Sources field specifies the list of sources for the application
+  sources:
+    - repoURL: https://github.com/hellseyfer/my-chart.git  # Can point to either a Helm chart repo or a git repo.
+      targetRevision: HEAD  # For Helm, this refers to the chart version.
+      path: single-app  # This has no meaning for Helm charts pulled directly from a Helm repo instead of git.
+      ref: my-repo  # For Helm, acts as a reference to this source for fetching values files from this source. Has no meaning when under `source` field
+      
   # Sync policy
   syncPolicy:
     automated: # automated sync by default retries failed attempts 5 times with following delays between attempts ( 5s, 10s, 20s, 40s, 80s ); retry controlled using `retry` field.
