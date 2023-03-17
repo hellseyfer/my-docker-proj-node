@@ -32,7 +32,8 @@ jobs:
         run: |
           # assuming the format of the tag is X.Y.Z
           sed -i 's/\(tag:.*\.\)[0-9]\+\.[0-9]\+\.[0-9]\+/\1'"${{ steps.step1.outputs.app_ver }}"'/' values.yaml
-          echo ${{ steps.step1.outputs.app_ver }}
+          # updated values.yaml
+          cat values.yaml
           
       - name: Push changes
         run: |
