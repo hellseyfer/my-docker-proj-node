@@ -31,7 +31,7 @@ jobs:
       - name: Make changes
         uses: mikefarah/yq@master
         with:
-          cmd: yq e '.tag = "'"${{ steps.step1.outputs.app_ver }}"'"' -i values.yaml
+          cmd: yq e '.image.tag = "'"${{ steps.step1.outputs.app_ver }}"'"' -i values.yaml
           
       - name: Push changes
         run: |
