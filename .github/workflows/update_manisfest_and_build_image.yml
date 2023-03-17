@@ -46,15 +46,13 @@ jobs:
          APP_VER: ${{needs.build-image.outputs.app_ver}}
         with:
           cmd: |
-            yq e '.appVersion = "'"$APP_VER"'"' -i single-app/Chart.yaml
+            yq e '.image.tag = "'"$APP_VER"'"' -i single-app/values.yaml
             
       - name: Increase Chart version by 1
-        uses: mikefarah/yq@master
-        with:
-          cmd: |
-            yq e '.version = (.version | tonumber + 1 | tostring)' single-app/Chart.yaml > Chart.yaml.new
-            mv Chart.yaml.new single-app/Chart.yaml
-            cat single-app/Chart.yaml
+        run: |
+          version=$(yq e '.version' single-app/Chart.yaml)
+          new_version=$(python -c "major, minor, patch = '${version}'.split('.'); print(f'{major}.{int(minor) + 1}.{patch}')")
+          yq e ".version = '${new_version}'" -i single-app/Chart.yaml
           
       - name: Push changes
         run: |
