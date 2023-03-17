@@ -34,7 +34,7 @@ jobs:
       
     steps:
       - name: Checkout other repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: hellseyfer/my-chart
           ref: 'main'
@@ -45,7 +45,7 @@ jobs:
         env:
          APP_VER: ${{needs.build-image.outputs.app_ver}}
         with:
-          cmd: yq e '.image.tag = "'"$APP_VER"'"' -i values.yaml
+          cmd: yq e '.image.tag = "'"$APP_VER"'"' -i single-app/values.yaml
           
       - name: Push changes
         run: |
