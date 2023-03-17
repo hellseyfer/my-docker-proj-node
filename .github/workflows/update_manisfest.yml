@@ -19,14 +19,15 @@ jobs:
 
       - name: Make changes
         run: |
-          git config user.name "GitHub Actions Bot"
-          git config user.email "<>"
           sed -i 's/\(tag:\).*/\1 1.17/' values.yaml
           # Make any changes you want to the repository here
-          git add .
-          git commit -m "Update repository from GitHub Actions"
-
+          
       - name: Push changes
         run: |
+          cd my-chart
+          git config user.name "action job"
+          git config user.email "action@job.com"
+          git add .
+          git commit -m "Update repository from GitHub Actions"
           # Push the changes back to the repository
           git push origin HEAD:main
