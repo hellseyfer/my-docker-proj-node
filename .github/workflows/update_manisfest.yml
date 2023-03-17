@@ -8,8 +8,19 @@ on:
 jobs:
   update-repo:
     runs-on: ubuntu-latest
-
+  # Map a step output to a job output
+    outputs:
+      output1: ${{ steps.step1.outputs.app_ver }}
     steps:
+      - uses: actions/checkout@v3
+      
+      - name: Checkout current repository
+        id: step1
+        run: |
+          APP_VERSION=$(jq -r '.version' package.json)
+          echo "App version is $APP_VERSION"
+          echo "app_ver=$APP_VERSION" >> $GITHUB_OUTPUT
+          
       - name: Checkout other repository
         uses: actions/checkout@v2
         with:
@@ -19,8 +30,9 @@ jobs:
 
       - name: Make changes
         run: |
-          sed -i 's/\(tag:\).*/\1 1.17/' values.yaml
-          # Make any changes you want to the repository here
+          # assuming the format of the tag is X.Y.Z
+          sed -i 's/\(tag:.*\.\)[0-9]\+\.[0-9]\+\.[0-9]\+/\1'"${{ steps.step1.outputs.app_ver }}"'/' values.yaml
+          echo ${{ steps.step1.outputs.app_ver }}
           
       - name: Push changes
         run: |
