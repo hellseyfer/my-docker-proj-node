@@ -18,7 +18,7 @@ jobs:
         docker login -u ${{secrets.DOCKER_USER}} -p ${{secrets.DOCKER_PASSWORD}} ${{secrets.DOCKER_SERVER}}
         docker build -t ${{ env.IMAGE_NAME }}:${{ github.run_number }} .
         docker image tag ${{ env.IMAGE_NAME }}:${{ github.run_number }} ${{secrets.DOCKER_SERVER}}/${{ env.IMAGE_NAME }}:${{ github.run_number }}   # To tag a local image into the repository with new ver.
-        docker image push ${{secrets.DOCKER_SERVER}}/${{ env.IMAGE_NAME }}:${{ steps.step1.outputs.app_ver }}
+        docker image push ${{secrets.DOCKER_SERVER}}/${{ env.IMAGE_NAME }}:${{ github.run_number }}
 
     # Dispatch event
     - name: Repository Dispatch
