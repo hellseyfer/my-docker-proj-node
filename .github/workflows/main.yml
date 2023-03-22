@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+env:
+  IMAGE_NAME: examplenode-dev
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+        
+    - name: Build and push
+      run: |
+        docker login -u ${{secrets.DOCKER_USER}} -p ${{secrets.DOCKER_PASSWORD}} ${{secrets.DOCKER_SERVER}}
+        docker build -t ${{ env.IMAGE_NAME }}:${{ github.run_number }} .
+        docker image tag ${{ env.IMAGE_NAME }}:${{ github.run_number }} ${{secrets.DOCKER_SERVER}}/${{ env.IMAGE_NAME }}:${{ github.run_number }}   # To tag a local image into the repository with new ver.
+        docker image push ${{secrets.DOCKER_SERVER}}/ ${{ env.IMAGE_NAME }}:${{ steps.step1.outputs.app_ver }}
+
+    # Dispatch event
+    - name: Repository Dispatch
+      uses: peter-evans/repository-dispatch@v1
+      with:
+        token: ${{ secrets.ACCESS_TOKEN }}
+        repository: ${{ github.actor }}/my-chart
+        event-type: new-image
+        client-payload: '{"image": "${{ github.actor }}/${{ env.IMAGE_NAME }}:${{ github.run_number }}", "tag":${{ github.run_number }}}'
